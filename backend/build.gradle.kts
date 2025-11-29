@@ -4,6 +4,7 @@ plugins {
 	id("org.springframework.boot") version "4.0.0"
 	id("io.spring.dependency-management") version "1.1.7"
 	kotlin("plugin.jpa") version "2.2.21"
+    id("org.flywaydb.flyway") version "11.18.0"
 }
 
 group = "com.henick"
@@ -34,6 +35,7 @@ dependencies {
     implementation("org.flywaydb:flyway-core")
     implementation("org.flywaydb:flyway-database-postgresql")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-flyway")
     compileOnly("org.projectlombok:lombok")
 	runtimeOnly("org.postgresql:postgresql")
 	annotationProcessor("org.projectlombok:lombok")
@@ -58,3 +60,5 @@ allOpen {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+
+
