@@ -5,6 +5,7 @@ import com.henick.web_lab_projekt_backend.repository.PostRepository
 import com.henick.web_lab_projekt_backend.service.PostService
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 @Service
 class PostServiceImpl(private val postRepository: PostRepository) : PostService{
@@ -16,7 +17,24 @@ class PostServiceImpl(private val postRepository: PostRepository) : PostService{
         postRepository.findByIdOrNull(id)
 
     override fun create(post: Post): Post {
+        post.createdAt = LocalDateTime.now()
+        post.updatedAt = LocalDateTime.now()
         return postRepository.save(post)
+    }
+
+    override fun update(id: Long, post: Post): Post {
+        if(!postRepository.existsPostById(id)){
+            throw NoSuchElementException("Post z danym id nie istnieje")
+        }
+        val existingPost = postRepository.findByIdOrNull(id)
+        post.id = id
+        post.createdAt = existingPost?.createdAt
+        post.updatedAt = LocalDateTime.now()
+        return postRepository.save(post)
+    }
+
+    override fun existsById(id: Long): Boolean {
+        return postRepository.existsPostById(id)
     }
 
 }

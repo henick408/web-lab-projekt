@@ -1,6 +1,5 @@
 package com.henick.web_lab_projekt_backend.dto
 
-import com.henick.web_lab_projekt_backend.entity.Category
 import java.time.LocalDateTime
 
 data class PostBasicDto(
@@ -8,6 +7,7 @@ data class PostBasicDto(
     var title: String,
     var content: String,
     var category: CategoryDto,
-    val createdAt: LocalDateTime,
+    val createdAt: LocalDateTime?,
+    var updatedAt: LocalDateTime?,
     val id: Long?
     )

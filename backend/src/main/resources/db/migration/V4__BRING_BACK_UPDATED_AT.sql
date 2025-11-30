@@ -1,0 +1,5 @@
+ALTER TABLE post
+    ADD updated_at TIMESTAMP WITHOUT TIME ZONE;
+
+ALTER TABLE post
+    ALTER COLUMN updated_at SET NOT NULL;

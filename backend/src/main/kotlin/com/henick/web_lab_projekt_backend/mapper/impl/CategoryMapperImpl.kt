@@ -1,6 +1,6 @@
 package com.henick.web_lab_projekt_backend.mapper.impl
 
-import com.henick.web_lab_projekt_backend.dto.CategoryCreatePostDto
+import com.henick.web_lab_projekt_backend.dto.CategoryPostDto
 import com.henick.web_lab_projekt_backend.dto.CategoryDto
 import com.henick.web_lab_projekt_backend.entity.Category
 import com.henick.web_lab_projekt_backend.mapper.CategoryMapper
@@ -22,13 +22,13 @@ class CategoryMapperImpl : CategoryMapper{
         )
     }
 
-    override fun mapToCreatePostDto(category: Category): CategoryCreatePostDto {
-        return CategoryCreatePostDto(
+    override fun mapToPostDto(category: Category): CategoryPostDto {
+        return CategoryPostDto(
             id = category.id
         )
     }
 
-    override fun mapFromCreatePostDto(categoryDto: CategoryCreatePostDto): Category {
+    override fun mapFromPostDto(categoryDto: CategoryPostDto): Category {
         return Category(
             id = categoryDto.id,
             name = ""

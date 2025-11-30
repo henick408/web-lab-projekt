@@ -1,5 +1,5 @@
 package com.henick.web_lab_projekt_backend.dto
 
-data class CategoryCreatePostDto(
+data class CategoryPostDto(
     val id: Long?
 )
