@@ -62,8 +62,10 @@ class PostController(
         if(!postService.existsById(id)){
             return ResponseEntity.notFound().build()
         }
+        val username = postService.getById(id)?.username.toString()
         val updatePost = postMapper.mapFromUpdateDto(updateDto)
         val updatedPost: Post = postService.update(id, updatePost)
+        updatedPost.username = username
         val outputPostDto = postMapper.mapToBasicDto(updatedPost)
         return ResponseEntity.ok(outputPostDto)
     }

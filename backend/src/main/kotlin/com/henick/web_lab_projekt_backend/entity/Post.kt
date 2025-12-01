@@ -15,7 +15,7 @@ import java.time.LocalDateTime
 @Entity
 class Post(
     @Column(nullable = false)
-    val username: String,
+    var username: String,
     @Column(nullable = false)
     var title: String,
     @Column(nullable = false)
