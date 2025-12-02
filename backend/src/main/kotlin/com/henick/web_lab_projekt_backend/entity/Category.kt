@@ -17,5 +17,5 @@ class Category(
     val posts: MutableList<Post> = mutableListOf(),
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null
+    var id: Long? = null
 )

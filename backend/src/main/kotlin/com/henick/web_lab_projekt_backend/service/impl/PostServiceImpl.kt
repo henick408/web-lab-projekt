@@ -23,9 +23,6 @@ class PostServiceImpl(private val postRepository: PostRepository) : PostService{
     }
 
     override fun update(id: Long, post: Post): Post {
-        if(!postRepository.existsPostById(id)){
-            throw NoSuchElementException("Post z danym id nie istnieje")
-        }
         val existingPost = postRepository.findByIdOrNull(id)
         post.id = id
         post.createdAt = existingPost?.createdAt
