@@ -3,6 +3,7 @@ package com.henick.web_lab_projekt_backend.controller
 import com.henick.web_lab_projekt_backend.dto.CategoryCreateDto
 import com.henick.web_lab_projekt_backend.dto.CategoryDto
 import com.henick.web_lab_projekt_backend.dto.CategoryCreatePostDto
+import com.henick.web_lab_projekt_backend.entity.Category
 import com.henick.web_lab_projekt_backend.mapper.CategoryMapper
 import com.henick.web_lab_projekt_backend.service.CategoryService
 import org.springframework.http.HttpStatus
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -56,6 +58,20 @@ class CategoryController(private val categoryService: CategoryService, private v
         }
         categoryService.deleteById(id)
         return ResponseEntity.noContent().build()
+    }
+
+    @PutMapping("/{id}")
+    fun updateCategory(
+        @PathVariable id: Long,
+        @RequestBody categoryDto: CategoryCreateDto
+    ): ResponseEntity<CategoryDto> {
+        if(!categoryService.existsById(id)) {
+            return ResponseEntity.notFound().build()
+        }
+        val category = categoryMapper.mapFromCreateDto(categoryDto)
+        category.id = id
+        val categoryOutputDto = categoryMapper.mapToDto(category)
+        return ResponseEntity.ok(categoryOutputDto)
     }
 
 }
