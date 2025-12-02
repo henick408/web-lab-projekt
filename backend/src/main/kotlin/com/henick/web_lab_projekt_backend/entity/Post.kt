@@ -21,7 +21,7 @@ class Post(
     @Column(nullable = false)
     var content: String,
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "column_id")
+    @JoinColumn(name = "category_id")
     var category: Category,
     @OneToMany(
         mappedBy = "post",
