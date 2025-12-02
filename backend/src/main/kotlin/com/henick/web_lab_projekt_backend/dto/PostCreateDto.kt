@@ -4,5 +4,5 @@ data class PostCreateDto(
     val username: String,
     val title: String,
     val content: String,
-    val category: CategoryPostDto
+    val category: CategoryCreatePostDto
 )

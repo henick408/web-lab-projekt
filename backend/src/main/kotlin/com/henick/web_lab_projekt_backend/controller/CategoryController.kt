@@ -1,13 +1,20 @@
 package com.henick.web_lab_projekt_backend.controller
 
+import com.henick.web_lab_projekt_backend.dto.CategoryCreateDto
 import com.henick.web_lab_projekt_backend.dto.CategoryDto
+import com.henick.web_lab_projekt_backend.dto.CategoryCreatePostDto
 import com.henick.web_lab_projekt_backend.mapper.CategoryMapper
 import com.henick.web_lab_projekt_backend.service.CategoryService
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.net.URI
 
 @RestController
 @RequestMapping("/api/categories")
@@ -29,5 +36,19 @@ class CategoryController(private val categoryService: CategoryService, private v
         val categoryDto = categoryMapper.mapToDto(category)
         return ResponseEntity.ok(categoryDto)
     }
+
+    @PostMapping()
+    fun createCategory(@RequestBody categoryDto: CategoryCreateDto): ResponseEntity<CategoryDto> {
+        val category = categoryMapper.mapFromCreateDto(categoryDto)
+        if (categoryService.existsByName(categoryDto.name)){
+            return ResponseEntity(HttpStatus.CONFLICT)
+        }
+        val createdCategory = categoryService.create(category)
+        val outputCategoryDto = categoryMapper.mapToDto(createdCategory)
+        val location = URI("/api/categories/${outputCategoryDto.id}")
+        return ResponseEntity.created(location).body(outputCategoryDto)
+    }
+
+
 
 }

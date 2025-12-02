@@ -17,4 +17,12 @@ class CategoryServiceImpl(private val categoryRepository: CategoryRepository) : 
         return categoryRepository.findByIdOrNull(id)
     }
 
+    override fun create(category: Category): Category {
+        return categoryRepository.save(category)
+    }
+
+    override fun existsByName(name: String): Boolean {
+        return categoryRepository.existsCategoryByName(name)
+    }
+
 }
