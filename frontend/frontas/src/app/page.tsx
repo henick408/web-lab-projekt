@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Header from "./_components/header";
-import Pattern from "./_components/pattern";
+import Pattern from "./assets/pattern";
 import SideMenu from "./_components/sideMenu";
 import Post from "./_components/post";
 

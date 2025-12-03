@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Pattern from "./pattern";
+import Pattern from "../assets/pattern";
 export default function Header() {
   return (
     <div className=" flex h-28 w-full items-center justify-between bg-blue-300 opacity-90">
