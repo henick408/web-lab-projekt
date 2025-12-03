@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Pattern from "../assets/pattern";
 export default function Header() {
   return (
@@ -12,7 +11,7 @@ export default function Header() {
           FORUM ROMANUM
         </div>
       </div>
-      <Pattern className="fill-blue-300 bg-zinc-50 h-28" />
+      <Pattern className="fill-blue-300 bg-zinc-50 h-28 " />
     </div>
   );
 }
