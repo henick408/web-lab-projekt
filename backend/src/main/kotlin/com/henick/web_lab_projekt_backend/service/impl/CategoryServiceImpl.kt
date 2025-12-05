@@ -17,6 +17,10 @@ class CategoryServiceImpl(private val categoryRepository: CategoryRepository) : 
         return categoryRepository.findByIdOrNull(id)
     }
 
+    override fun getByNameLike(name: String): List<Category> {
+        return categoryRepository.findByNameContainingIgnoreCase(name)
+    }
+
     override fun create(category: Category): Category {
         return categoryRepository.save(category)
     }

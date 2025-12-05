@@ -6,6 +6,7 @@ import com.henick.web_lab_projekt_backend.dto.CategoryCreatePostDto
 import com.henick.web_lab_projekt_backend.entity.Category
 import com.henick.web_lab_projekt_backend.mapper.CategoryMapper
 import com.henick.web_lab_projekt_backend.service.CategoryService
+import org.springframework.data.repository.query.Param
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.net.URI
 
@@ -23,10 +25,16 @@ import java.net.URI
 class CategoryController(private val categoryService: CategoryService, private val categoryMapper: CategoryMapper) {
 
     @GetMapping()
-    fun getAllCategories(): ResponseEntity<List<CategoryDto>> {
-        val categories = categoryService.getAll();
-        val categoryDtos = categories.map{category -> categoryMapper.mapToDto(category)}.toList()
+    fun getAllCategories(@RequestParam name: String?): ResponseEntity<List<CategoryDto>> {
+        if(name == null) {
+            val categories = categoryService.getAll();
+            val categoryDtos = categories.map { category -> categoryMapper.mapToDto(category) }.toList()
+            return ResponseEntity.ok(categoryDtos)
+        }
+        val categories = categoryService.getByNameLike(name)
+        val categoryDtos = categories.map { category -> categoryMapper.mapToDto(category) }
         return ResponseEntity.ok(categoryDtos)
+
     }
 
     @GetMapping("/{id}")
@@ -73,5 +81,6 @@ class CategoryController(private val categoryService: CategoryService, private v
         val categoryOutputDto = categoryMapper.mapToDto(category)
         return ResponseEntity.ok(categoryOutputDto)
     }
+
 
 }
