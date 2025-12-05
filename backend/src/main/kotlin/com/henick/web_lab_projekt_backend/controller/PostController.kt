@@ -9,6 +9,10 @@ import com.henick.web_lab_projekt_backend.mapper.CommentMapper
 import com.henick.web_lab_projekt_backend.mapper.PostMapper
 import com.henick.web_lab_projekt_backend.service.CommentService
 import com.henick.web_lab_projekt_backend.service.PostService
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+
 import java.net.URI
 
 @RestController
@@ -30,10 +35,18 @@ class PostController(
 ) {
 
     @GetMapping
-    fun getAllPosts(): ResponseEntity<List<PostBasicDto>>{
-        val posts = postService.getAll()
-        val postBasicDtos = posts.stream().map{post -> postMapper.mapToBasicDto(post)}.toList()
-        return ResponseEntity.ok(postBasicDtos)
+    fun getAllPosts(
+        @PageableDefault(
+            page = 0,
+            size = 10,
+            sort = ["createdAt"],
+            direction = Sort.Direction.DESC
+        )
+        pageable: Pageable
+    ): ResponseEntity<Page<PostBasicDto>>{
+        val page = postService.getAllPaged(pageable)
+        val pageDto = page.map{post -> postMapper.mapToBasicDto(post)}
+        return ResponseEntity.ok(pageDto)
     }
 
     @GetMapping("/{id}")
@@ -80,13 +93,22 @@ class PostController(
     }
 
     @GetMapping("/{id}/comments")
-    fun getCommentsFromPost(@PathVariable id: Long): ResponseEntity<List<CommentDto>> {
+    fun getCommentsFromPost(
+        @PageableDefault(
+            page = 0,
+            size = 5,
+            sort = ["createdAt"],
+            direction = Sort.Direction.DESC
+        )
+        pageable: Pageable,
+        @PathVariable id: Long
+    ): ResponseEntity<Page<CommentDto>> {
         val post = postService.getById(id)
         if (post == null) {
             return ResponseEntity.notFound().build()
         }
-        val comments = commentService.getAllCommentsForPost(id)
-        val commentDtos = comments.map{comment -> commentMapper.mapToDto(comment)}.toList()
+        val comments = commentService.getAllForPostPaged(id, pageable)
+        val commentDtos = comments.map{comment -> commentMapper.mapToDto(comment)}
         return ResponseEntity.ok(commentDtos)
     }
 

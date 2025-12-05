@@ -91,7 +91,7 @@ VALUES
      (SELECT id FROM post WHERE username = 'Marcel'),
      TIMESTAMP 'now'
     ),
-    ('Mróz',
+    ('Śnieg',
      'Poka',
      (SELECT id FROM post WHERE username = 'Marcel'),
      TIMESTAMP 'now'
