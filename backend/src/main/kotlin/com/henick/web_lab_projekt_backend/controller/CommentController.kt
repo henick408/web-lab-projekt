@@ -22,7 +22,16 @@ class CommentController(
     private val postService: PostService
 ) {
 
+    @GetMapping("/{id}")
+    fun getCommentById(@PathVariable id: Long): ResponseEntity<CommentDto> {
+        val comment = commentService.getById(id)
+        if (comment == null) {
+            return ResponseEntity.notFound().build()
+        }
+        val outputCommentDto = commentMapper.mapToDto(comment)
 
+        return ResponseEntity.ok(outputCommentDto)
+    }
 
     @PostMapping
     fun createComment(@RequestBody commentDto: CommentCreateDto): ResponseEntity<CommentDto> {
