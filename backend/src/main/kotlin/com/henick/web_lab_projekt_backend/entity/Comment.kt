@@ -12,15 +12,15 @@ import java.time.LocalDateTime
 @Entity
 class Comment(
     @Column(nullable = false)
-    val username: String,
+    var username: String,
     @Column(nullable = false)
     var content: String,
     @ManyToOne
     @JoinColumn(name = "post_id")
-    val post: Post?,
+    val post: Post,
     @Column(name = "created_at", nullable = false)
-    val createdAt: LocalDateTime = LocalDateTime.now(),
+    var createdAt: LocalDateTime? = null,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null
+    var id: Long? = null
 )

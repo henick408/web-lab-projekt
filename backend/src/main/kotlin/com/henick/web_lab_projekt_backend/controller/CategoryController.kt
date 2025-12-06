@@ -1,12 +1,9 @@
 package com.henick.web_lab_projekt_backend.controller
 
-import com.henick.web_lab_projekt_backend.dto.CategoryCreateDto
-import com.henick.web_lab_projekt_backend.dto.CategoryDto
-import com.henick.web_lab_projekt_backend.dto.CategoryCreatePostDto
-import com.henick.web_lab_projekt_backend.entity.Category
+import com.henick.web_lab_projekt_backend.dto.category.CategoryCreateDto
+import com.henick.web_lab_projekt_backend.dto.category.CategoryDto
 import com.henick.web_lab_projekt_backend.mapper.CategoryMapper
 import com.henick.web_lab_projekt_backend.service.CategoryService
-import org.springframework.data.repository.query.Param
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping

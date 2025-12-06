@@ -1,8 +1,8 @@
 package com.henick.web_lab_projekt_backend.mapper
 
-import com.henick.web_lab_projekt_backend.dto.CategoryCreateDto
-import com.henick.web_lab_projekt_backend.dto.CategoryCreatePostDto
-import com.henick.web_lab_projekt_backend.dto.CategoryDto
+import com.henick.web_lab_projekt_backend.dto.category.CategoryCreateDto
+import com.henick.web_lab_projekt_backend.dto.category.CategoryCreatePostDto
+import com.henick.web_lab_projekt_backend.dto.category.CategoryDto
 import com.henick.web_lab_projekt_backend.entity.Category
 
 interface CategoryMapper {

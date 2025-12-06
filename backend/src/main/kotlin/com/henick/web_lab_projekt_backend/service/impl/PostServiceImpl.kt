@@ -37,7 +37,7 @@ class PostServiceImpl(private val postRepository: PostRepository) : PostService{
     }
 
     override fun existsById(id: Long): Boolean {
-        return postRepository.existsPostById(id)
+        return postRepository.existsById(id)
     }
 
     override fun deleteById(id: Long) {

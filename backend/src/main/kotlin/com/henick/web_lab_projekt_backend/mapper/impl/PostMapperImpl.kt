@@ -1,8 +1,10 @@
 package com.henick.web_lab_projekt_backend.mapper.impl
 
-import com.henick.web_lab_projekt_backend.dto.PostBasicDto
-import com.henick.web_lab_projekt_backend.dto.PostCreateDto
-import com.henick.web_lab_projekt_backend.dto.PostUpdateDto
+import com.henick.web_lab_projekt_backend.dto.post.PostBasicDto
+import com.henick.web_lab_projekt_backend.dto.post.PostCreateCommentDto
+import com.henick.web_lab_projekt_backend.dto.post.PostCreateDto
+import com.henick.web_lab_projekt_backend.dto.post.PostUpdateDto
+import com.henick.web_lab_projekt_backend.entity.Category
 import com.henick.web_lab_projekt_backend.entity.Post
 import com.henick.web_lab_projekt_backend.mapper.CategoryMapper
 import com.henick.web_lab_projekt_backend.mapper.PostMapper
@@ -72,6 +74,21 @@ class PostMapperImpl(private val categoryMapper: CategoryMapper) : PostMapper {
             title = postDto.title,
             content = postDto.content,
             category = category
+        )
+    }
+
+    override fun mapToCreateCommentDto(post: Post): PostCreateCommentDto {
+        return PostCreateCommentDto(
+            id = post.id
+        )
+    }
+
+    override fun mapFromCreateCommentDto(postDto: PostCreateCommentDto): Post {
+        return Post(
+            username = "",
+            title = "",
+            content = "",
+            category = Category("")
         )
     }
 }

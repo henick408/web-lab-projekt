@@ -1,4 +1,4 @@
-package com.henick.web_lab_projekt_backend.dto
+package com.henick.web_lab_projekt_backend.dto.comment
 
 import java.time.LocalDateTime
 

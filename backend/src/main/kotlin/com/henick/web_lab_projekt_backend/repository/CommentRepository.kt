@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface CommentRepository : JpaRepository<Comment, Long> {
-    fun getCommentsByPostId(postId: Long): List<Comment>
-    fun getCommentsByPostId(postId: Long, pageable: Pageable): Page<Comment>
+    fun findCommentsByPostId(postId: Long): List<Comment>
+    fun findCommentsByPostId(postId: Long, pageable: Pageable): Page<Comment>
+    fun findCommentByPostIdAndId(postId: Long, commentId: Long): Comment?
 }

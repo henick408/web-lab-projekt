@@ -1,4 +1,6 @@
-package com.henick.web_lab_projekt_backend.dto
+package com.henick.web_lab_projekt_backend.dto.post
+
+import com.henick.web_lab_projekt_backend.dto.category.CategoryCreatePostDto
 
 data class PostCreateDto(
     val username: String,
