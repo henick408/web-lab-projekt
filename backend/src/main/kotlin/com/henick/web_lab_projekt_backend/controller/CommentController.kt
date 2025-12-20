@@ -1,8 +1,7 @@
 package com.henick.web_lab_projekt_backend.controller
 
-import com.henick.web_lab_projekt_backend.dto.comment.CommentCreateDto
-import com.henick.web_lab_projekt_backend.dto.comment.CommentDto
-import com.henick.web_lab_projekt_backend.dto.comment.CommentUpdateDto
+import com.henick.web_lab_projekt_backend.dto.CommentRequestDto
+import com.henick.web_lab_projekt_backend.dto.CommentResponseDto
 import com.henick.web_lab_projekt_backend.mapper.CommentMapper
 import com.henick.web_lab_projekt_backend.service.CommentService
 import com.henick.web_lab_projekt_backend.service.PostService
@@ -27,25 +26,25 @@ class CommentController(
 ) {
 
     @GetMapping("/{id}")
-    fun getCommentById(@PathVariable id: Long): ResponseEntity<CommentDto> {
+    fun getCommentById(@PathVariable id: Long): ResponseEntity<CommentResponseDto> {
         val comment = commentService.getById(id)
         if (comment == null) {
             return ResponseEntity.notFound().build()
         }
-        val outputCommentDto = commentMapper.mapToDto(comment)
+        val outputCommentDto = commentMapper.mapToResponseDto(comment)
 
         return ResponseEntity.ok(outputCommentDto)
     }
 
     @PostMapping
-    fun createComment(@Valid @RequestBody commentDto: CommentCreateDto): ResponseEntity<CommentDto> {
+    fun createComment(@Valid @RequestBody commentDto: CommentRequestDto): ResponseEntity<CommentResponseDto> {
         val post = postService.getById(commentDto.postId)
         if (post == null){
             return ResponseEntity.badRequest().build()
         }
-        val comment = commentMapper.mapFromCreateDto(commentDto, post)
+        val comment = commentMapper.mapFromRequestDto(commentDto, post)
         val createdComment = commentService.create(comment)
-        val outputCommentDto = commentMapper.mapToDto(createdComment)
+        val outputCommentDto = commentMapper.mapToResponseDto(createdComment)
 
         val commentId = outputCommentDto.id
         val location = URI("/api/posts/${createdComment.post.id}/comments/$commentId")
@@ -57,7 +56,7 @@ class CommentController(
     fun updateComment(
         @PathVariable id: Long,
         @Valid @RequestBody commentDto: CommentUpdateDto
-    ): ResponseEntity<CommentDto>{
+    ): ResponseEntity<CommentResponseDto>{
         val comment = commentService.getById(id)
         if (comment == null) {
             return ResponseEntity.notFound().build()
@@ -68,7 +67,7 @@ class CommentController(
         val inputComment = commentMapper.mapFromUpdateDto(commentDto, post)
         inputComment.username = username
         val updatedComment = commentService.update(id, inputComment)
-        val outputCommentDto = commentMapper.mapToDto(updatedComment)
+        val outputCommentDto = commentMapper.mapToResponseDto(updatedComment)
 
         return ResponseEntity.ok(outputCommentDto)
     }

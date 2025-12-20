@@ -1,7 +1,7 @@
 package com.henick.web_lab_projekt_backend.controller
 
-import com.henick.web_lab_projekt_backend.dto.category.CategoryCreateDto
-import com.henick.web_lab_projekt_backend.dto.category.CategoryDto
+import com.henick.web_lab_projekt_backend.dto.CategoryRequestDto
+import com.henick.web_lab_projekt_backend.dto.CategoryResponseDto
 import com.henick.web_lab_projekt_backend.mapper.CategoryMapper
 import com.henick.web_lab_projekt_backend.service.CategoryService
 import jakarta.validation.Valid
@@ -23,36 +23,36 @@ import java.net.URI
 class CategoryController(private val categoryService: CategoryService, private val categoryMapper: CategoryMapper) {
 
     @GetMapping()
-    fun getAllCategories(@RequestParam name: String?): ResponseEntity<List<CategoryDto>> {
+    fun getAllCategories(@RequestParam name: String?): ResponseEntity<List<CategoryResponseDto>> {
         if(name == null) {
             val categories = categoryService.getAll()
-            val categoryDtos = categories.map { category -> categoryMapper.mapToDto(category) }.toList()
+            val categoryDtos = categories.map { category -> categoryMapper.mapToResponseDto(category) }.toList()
             return ResponseEntity.ok(categoryDtos)
         }
         val categories = categoryService.getByNameLike(name)
-        val categoryDtos = categories.map { category -> categoryMapper.mapToDto(category) }
+        val categoryDtos = categories.map { category -> categoryMapper.mapToResponseDto(category) }
         return ResponseEntity.ok(categoryDtos)
 
     }
 
     @GetMapping("/{id}")
-    fun getCategoryById(@PathVariable id: Long): ResponseEntity<CategoryDto> {
+    fun getCategoryById(@PathVariable id: Long): ResponseEntity<CategoryResponseDto> {
         val category = categoryService.getById(id)
         if (category == null) {
             return ResponseEntity.notFound().build()
         }
-        val categoryDto = categoryMapper.mapToDto(category)
+        val categoryDto = categoryMapper.mapToResponseDto(category)
         return ResponseEntity.ok(categoryDto)
     }
 
     @PostMapping()
-    fun createCategory(@Valid @RequestBody categoryDto: CategoryCreateDto): ResponseEntity<CategoryDto> {
-        val category = categoryMapper.mapFromCreateDto(categoryDto)
+    fun createCategory(@Valid @RequestBody categoryDto: CategoryRequestDto): ResponseEntity<CategoryResponseDto> {
+        val category = categoryMapper.mapFromRequestDto(categoryDto)
         if (categoryService.existsByName(categoryDto.name)){
             return ResponseEntity(HttpStatus.CONFLICT)
         }
         val createdCategory = categoryService.create(category)
-        val outputCategoryDto = categoryMapper.mapToDto(createdCategory)
+        val outputCategoryDto = categoryMapper.mapToResponseDto(createdCategory)
         val location = URI("/api/categories/${outputCategoryDto.id}")
         return ResponseEntity.created(location).body(outputCategoryDto)
     }
@@ -69,14 +69,14 @@ class CategoryController(private val categoryService: CategoryService, private v
     @PutMapping("/{id}")
     fun updateCategory(
         @PathVariable id: Long,
-        @Valid @RequestBody categoryDto: CategoryCreateDto
-    ): ResponseEntity<CategoryDto> {
+        @Valid @RequestBody categoryDto: CategoryRequestDto
+    ): ResponseEntity<CategoryResponseDto> {
         if(!categoryService.existsById(id)) {
             return ResponseEntity.notFound().build()
         }
-        val category = categoryMapper.mapFromCreateDto(categoryDto)
+        val category = categoryMapper.mapFromRequestDto(categoryDto)
         category.id = id
-        val categoryOutputDto = categoryMapper.mapToDto(category)
+        val categoryOutputDto = categoryMapper.mapToResponseDto(category)
         return ResponseEntity.ok(categoryOutputDto)
     }
 

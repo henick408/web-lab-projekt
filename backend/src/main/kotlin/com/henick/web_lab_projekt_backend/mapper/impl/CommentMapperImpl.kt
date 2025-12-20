@@ -1,18 +1,14 @@
 package com.henick.web_lab_projekt_backend.mapper.impl
 
-import com.henick.web_lab_projekt_backend.dto.comment.CommentCreateDto
-import com.henick.web_lab_projekt_backend.dto.comment.CommentDto
-import com.henick.web_lab_projekt_backend.dto.comment.CommentUpdateDto
-import com.henick.web_lab_projekt_backend.entity.Category
-import com.henick.web_lab_projekt_backend.entity.Comment
-import com.henick.web_lab_projekt_backend.entity.Post
+import com.henick.web_lab_projekt_backend.dto.*
+import com.henick.web_lab_projekt_backend.entity.*
 import com.henick.web_lab_projekt_backend.mapper.CommentMapper
 import org.springframework.stereotype.Component
 
 @Component
 class CommentMapperImpl() : CommentMapper{
-    override fun mapToDto(comment: Comment): CommentDto {
-        return CommentDto(
+    override fun mapToResponseDto(comment: Comment): CommentResponseDto {
+        return CommentResponseDto(
             username = comment.username,
             content = comment.content,
             createdAt = comment.createdAt!!,
@@ -20,7 +16,7 @@ class CommentMapperImpl() : CommentMapper{
         )
     }
 
-    override fun mapFromDto(commentDto: CommentDto): Comment {
+    override fun mapFromResponseDto(commentDto: CommentResponseDto): Comment {
         return Comment(
             username = commentDto.username,
             content = commentDto.content,
@@ -30,15 +26,15 @@ class CommentMapperImpl() : CommentMapper{
         )
     }
 
-    override fun mapToCreateDto(comment: Comment): CommentCreateDto {
-        return CommentCreateDto(
+    override fun mapToRequestDto(comment: Comment): CommentRequestDto {
+        return CommentRequestDto(
             username = comment.username,
             content = comment.content,
             postId = comment.post.id!!
         )
     }
 
-    override fun mapFromCreateDto(commentDto: CommentCreateDto, post: Post): Comment {
+    override fun mapFromRequestDto(commentDto: CommentRequestDto, post: Post): Comment {
         return Comment(
             username = commentDto.username,
             content = commentDto.content,

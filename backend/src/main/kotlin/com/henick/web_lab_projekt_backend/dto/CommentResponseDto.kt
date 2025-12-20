@@ -1,8 +1,8 @@
-package com.henick.web_lab_projekt_backend.dto.comment
+package com.henick.web_lab_projekt_backend.dto
 
 import java.time.LocalDateTime
 
-data class CommentDto(
+data class CommentResponseDto(
     val username: String,
     val content: String,
     val createdAt: LocalDateTime,
