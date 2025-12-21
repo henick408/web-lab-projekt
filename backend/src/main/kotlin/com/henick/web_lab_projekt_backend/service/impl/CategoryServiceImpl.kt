@@ -37,7 +37,7 @@ class CategoryServiceImpl(private val categoryRepository: CategoryRepository) : 
         return categoryRepository.existsById(id)
     }
 
-    override fun updateCategory(id: Long, category: Category): Category {
+    override fun update(id: Long, category: Category): Category {
         category.id = id
         return categoryRepository.save(category)
     }

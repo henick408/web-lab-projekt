@@ -10,5 +10,5 @@ interface CategoryService {
     fun existsByName(name: String): Boolean
     fun deleteById(id: Long)
     fun existsById(id: Long): Boolean
-    fun updateCategory(id: Long, category: Category): Category
+    fun update(id: Long, category: Category): Category
 }

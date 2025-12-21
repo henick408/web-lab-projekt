@@ -1,21 +1,12 @@
 package com.henick.web_lab_projekt_backend.controller
 
-import com.henick.web_lab_projekt_backend.dto.comment.CommentCreateDto
-import com.henick.web_lab_projekt_backend.dto.comment.CommentDto
-import com.henick.web_lab_projekt_backend.dto.comment.CommentUpdateDto
+import com.henick.web_lab_projekt_backend.dto.*
 import com.henick.web_lab_projekt_backend.mapper.CommentMapper
-import com.henick.web_lab_projekt_backend.service.CommentService
-import com.henick.web_lab_projekt_backend.service.PostService
-import jakarta.validation.Valid
+import com.henick.web_lab_projekt_backend.service.*
+import com.henick.web_lab_projekt_backend.validation.*
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.*
 import java.net.URI
 
 @RestController
@@ -27,25 +18,22 @@ class CommentController(
 ) {
 
     @GetMapping("/{id}")
-    fun getCommentById(@PathVariable id: Long): ResponseEntity<CommentDto> {
+    fun getCommentById(@PathVariable id: Long): ResponseEntity<CommentResponseDto> {
         val comment = commentService.getById(id)
         if (comment == null) {
             return ResponseEntity.notFound().build()
         }
-        val outputCommentDto = commentMapper.mapToDto(comment)
+        val outputCommentDto = commentMapper.mapToResponseDto(comment)
 
         return ResponseEntity.ok(outputCommentDto)
     }
 
     @PostMapping
-    fun createComment(@Valid @RequestBody commentDto: CommentCreateDto): ResponseEntity<CommentDto> {
-        val post = postService.getById(commentDto.postId)
-        if (post == null){
-            return ResponseEntity.badRequest().build()
-        }
-        val comment = commentMapper.mapFromCreateDto(commentDto, post)
+    fun createComment(@Validated(OnCreate::class) @RequestBody commentDto: CommentRequestDto): ResponseEntity<CommentResponseDto> {
+        val post = postService.getById(commentDto.postId!!) ?: return ResponseEntity.badRequest().build()
+        val comment = commentMapper.mapFromRequestDto(commentDto, post)
         val createdComment = commentService.create(comment)
-        val outputCommentDto = commentMapper.mapToDto(createdComment)
+        val outputCommentDto = commentMapper.mapToResponseDto(createdComment)
 
         val commentId = outputCommentDto.id
         val location = URI("/api/posts/${createdComment.post.id}/comments/$commentId")
@@ -56,19 +44,16 @@ class CommentController(
     @PutMapping("/{id}")
     fun updateComment(
         @PathVariable id: Long,
-        @Valid @RequestBody commentDto: CommentUpdateDto
-    ): ResponseEntity<CommentDto>{
-        val comment = commentService.getById(id)
-        if (comment == null) {
-            return ResponseEntity.notFound().build()
-        }
+        @Validated(value = [OnUpdate::class]) @RequestBody commentDto: CommentRequestDto
+    ): ResponseEntity<CommentResponseDto>{
+        val comment = commentService.getById(id) ?: return ResponseEntity.notFound().build()
 
         val post = postService.getById(comment.post.id!!)!!
         val username = comment.username
-        val inputComment = commentMapper.mapFromUpdateDto(commentDto, post)
+        val inputComment = commentMapper.mapFromRequestDto(commentDto, post)
         inputComment.username = username
         val updatedComment = commentService.update(id, inputComment)
-        val outputCommentDto = commentMapper.mapToDto(updatedComment)
+        val outputCommentDto = commentMapper.mapToResponseDto(updatedComment)
 
         return ResponseEntity.ok(outputCommentDto)
     }

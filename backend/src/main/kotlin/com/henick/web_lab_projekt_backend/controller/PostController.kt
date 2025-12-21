@@ -1,27 +1,14 @@
 package com.henick.web_lab_projekt_backend.controller
 
-import com.henick.web_lab_projekt_backend.dto.comment.CommentDto
-import com.henick.web_lab_projekt_backend.dto.post.PostBasicDto
-import com.henick.web_lab_projekt_backend.dto.post.PostCreateDto
-import com.henick.web_lab_projekt_backend.dto.post.PostUpdateDto
-import com.henick.web_lab_projekt_backend.mapper.CommentMapper
-import com.henick.web_lab_projekt_backend.mapper.PostMapper
-import com.henick.web_lab_projekt_backend.service.CommentService
-import com.henick.web_lab_projekt_backend.service.PostService
-import jakarta.validation.Valid
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Sort
+import com.henick.web_lab_projekt_backend.dto.*
+import com.henick.web_lab_projekt_backend.mapper.*
+import com.henick.web_lab_projekt_backend.service.*
+import com.henick.web_lab_projekt_backend.validation.*
+import org.springframework.data.domain.*
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.*
 
 import java.net.URI
 
@@ -43,44 +30,38 @@ class PostController(
             direction = Sort.Direction.DESC
         )
         pageable: Pageable
-    ): ResponseEntity<Page<PostBasicDto>>{
+    ): ResponseEntity<Page<PostResponseDto>>{
         val page = postService.getAllPaged(pageable)
-        val pageDto = page.map{post -> postMapper.mapToBasicDto(post)}
+        val pageDto = page.map{post -> postMapper.mapToResponseDto(post)}
         return ResponseEntity.ok(pageDto)
     }
 
     @GetMapping("/{id}")
-    fun getPostById(@PathVariable id: Long): ResponseEntity<PostBasicDto> {
-        val post = postService.getById(id)
-        if (post == null){
-            return ResponseEntity.notFound().build()
-        }
-        return ResponseEntity.ok(postMapper.mapToBasicDto(post))
+    fun getPostById(@PathVariable id: Long): ResponseEntity<PostResponseDto> {
+        val post = postService.getById(id) ?: return ResponseEntity.notFound().build()
+        return ResponseEntity.ok(postMapper.mapToResponseDto(post))
     }
 
     @PostMapping
-    fun createPost(@Valid @RequestBody postCreateDto: PostCreateDto): ResponseEntity<PostBasicDto> {
-        val post = postMapper.mapFromCreateDto(postCreateDto)
+    fun createPost(@Validated(OnCreate::class) @RequestBody postCreateDto: PostRequestDto): ResponseEntity<PostResponseDto> {
+        val post = postMapper.mapFromRequestDto(postCreateDto)
         val createdPost = postService.create(post)
-        val outputPostDto = postMapper.mapToBasicDto(createdPost)
+        val outputPostDto = postMapper.mapToResponseDto(createdPost)
         val location = URI.create("/posts/${outputPostDto.id}")
         return ResponseEntity.created(location).body(outputPostDto)
     }
 
     @PutMapping("/{id}")
     fun updatePost(
-        @Valid @RequestBody updateDto: PostUpdateDto,
+        @Validated(OnUpdate::class) @RequestBody updateDto: PostRequestDto,
         @PathVariable id: Long
-    ): ResponseEntity<PostBasicDto> {
-        val post = postService.getById(id)
-        if(post == null){
-            return ResponseEntity.notFound().build()
-        }
-        val username = post.username
-        val inputPost = postMapper.mapFromUpdateDto(updateDto)
-        inputPost.username = username
+    ): ResponseEntity<PostResponseDto> {
+        //val post = postService.getById(id) ?: return ResponseEntity.notFound().build()
+        //val username = post.username
+        val inputPost = postMapper.mapFromRequestDto(updateDto)
+        //inputPost.username = username
         val updatedPost = postService.update(id, inputPost)
-        val outputPostDto = postMapper.mapToBasicDto(updatedPost)
+        val outputPostDto = postMapper.mapToResponseDto(updatedPost)
         return ResponseEntity.ok(outputPostDto)
     }
 
@@ -103,12 +84,12 @@ class PostController(
         )
         pageable: Pageable,
         @PathVariable id: Long
-    ): ResponseEntity<Page<CommentDto>> {
+    ): ResponseEntity<Page<CommentResponseDto>> {
         if (!postService.existsById(id)) {
             return ResponseEntity.notFound().build()
         }
         val comments = commentService.getAllForPostPaged(id, pageable)
-        val commentDtos = comments.map{comment -> commentMapper.mapToDto(comment)}
+        val commentDtos = comments.map{comment -> commentMapper.mapToResponseDto(comment)}
         return ResponseEntity.ok(commentDtos)
     }
 
@@ -116,15 +97,12 @@ class PostController(
     fun getCommentFromPostByCommentId(
         @PathVariable postId: Long,
         @PathVariable commentId: Long
-    ): ResponseEntity<CommentDto>{
+    ): ResponseEntity<CommentResponseDto>{
 
-        val comment = commentService.getForPostByCommentId(postId, commentId)
+        val comment =
+            commentService.getForPostByCommentId(postId, commentId) ?: return ResponseEntity.notFound().build()
 
-        if (comment == null){
-            return ResponseEntity.notFound().build()
-        }
-
-        val commentDto = commentMapper.mapToDto(comment)
+        val commentDto = commentMapper.mapToResponseDto(comment)
 
         return ResponseEntity.ok(commentDto)
 

@@ -1,8 +1,7 @@
 package com.henick.web_lab_projekt_backend.service
 
 import com.henick.web_lab_projekt_backend.entity.Post
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.*
 
 interface PostService {
 

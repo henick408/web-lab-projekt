@@ -3,8 +3,7 @@ package com.henick.web_lab_projekt_backend.service.impl
 import com.henick.web_lab_projekt_backend.entity.Post
 import com.henick.web_lab_projekt_backend.repository.PostRepository
 import com.henick.web_lab_projekt_backend.service.PostService
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.*
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -29,9 +28,11 @@ class PostServiceImpl(private val postRepository: PostRepository) : PostService{
     }
 
     override fun update(id: Long, post: Post): Post {
-        val existingPost = postRepository.findByIdOrNull(id)
+        val existingPost = postRepository.findByIdOrNull(id) ?: throw NoSuchElementException("Cannot update post that doesn't exist")
         post.id = id
-        post.createdAt = existingPost?.createdAt
+        post.username = existingPost.username
+        post.category = existingPost.category
+        post.createdAt = existingPost.createdAt
         post.updatedAt = LocalDateTime.now()
         return postRepository.save(post)
     }
