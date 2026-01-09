@@ -2,6 +2,7 @@
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 import RoundPattern from "../assets/roundPattern";
+import PostCatForm from "./postCat";
 interface SendCat {
   sendCat: (data: number) => void;
   onAddPost: () => void;
@@ -15,6 +16,7 @@ interface Category {
 export default function SideMenu({ sendCat, onAddPost, showForm }: SendCat) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showAdd, setShowAdd] = useState(false);
   const [visiblePatterns, setVisiblePatterns] = useState<Set<number>>(
     new Set()
   );
@@ -147,6 +149,16 @@ export default function SideMenu({ sendCat, onAddPost, showForm }: SendCat) {
             <div>Brak kategorii</div>
           )}
         </div>
+        <div
+          style={{ fontFamily: "EB Garamond, serif" }}
+          className="p-2 bg-blue-200 text-black hover:bg-blue-300 hover:cursor-pointer text-lg w-full rounded-lg text-center mt-2"
+          onClick={() => {
+            setShowAdd(!showAdd);
+          }}
+        >
+          {showAdd ? "Anuluj" : "Nie ma tego czego szukasz? dodaj sam!"}
+        </div>
+        {showAdd && <PostCatForm />}
       </div>
     </div>
   );
