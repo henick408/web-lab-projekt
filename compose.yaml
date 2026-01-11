@@ -32,6 +32,18 @@ services:
     networks:
       - app-net
 
+  frontend:
+    build:
+      context: ./frontend/frontas
+      dockerfile: Dockerfile
+    container_name: react-frontend
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+    networks:
+      - app-net
+
 networks:
   app-net:
 
